@@ -5,8 +5,8 @@ fn main() {
     let image_width = 256;
     let image_height = 256;
 
-    let a = Vec3::new(2.0, 3.9, 4.9);
-    println!("aaa {}", a.x());
+    let a = Point3::new(2.0, 3.9, 4.9);
+    println!("{:?}", a);
 
     let mut image = RgbImage::new(image_width, image_height);
 
