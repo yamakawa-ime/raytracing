@@ -1,6 +1,6 @@
 use image::{Rgb, RgbImage};
 
-use crate::vec::Vec3;
+use crate::lib_core::vec::Vec3;
 
 pub type Color = Vec3;
 

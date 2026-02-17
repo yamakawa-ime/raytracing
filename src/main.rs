@@ -1,5 +1,5 @@
 use image::RgbImage;
-use raytracing::color::*;
+use raytracing::lib_core::color::*;
 
 fn main() {
     let image_width = 256;

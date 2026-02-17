@@ -1,3 +1,1 @@
-pub mod color;
-pub mod point;
-pub mod vec;
+pub mod lib_core;
