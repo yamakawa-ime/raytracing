@@ -6,6 +6,7 @@ use raytracing::lib_core::{
     color::*,
     hittable::{HitRecord, Hittable},
     hittable_list::HittableList,
+    interval::Interval,
     point::Point3,
     ray::Ray,
     sphere::Sphere,
@@ -56,7 +57,7 @@ fn main() {
 
 fn ray_color(r: Ray, world: &dyn Hittable) -> Color {
     let mut rec = HitRecord::default();
-    if world.hit(&r, 0.0, f64::INFINITY, &mut rec) {
+    if world.hit(&r, Interval::new(0.0, f64::INFINITY), &mut rec) {
         return (rec.normal + Color::new(1.0, 1.0, 1.0)) * 0.5;
     }
 
