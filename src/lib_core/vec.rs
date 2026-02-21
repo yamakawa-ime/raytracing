@@ -10,6 +10,10 @@ impl Vec3 {
         Self { e: [x, y, z] }
     }
 
+    pub fn default() -> Self {
+        Self { e: [0.0, 0.0, 0.0] }
+    }
+
     pub fn x(&self) -> f64 {
         self.e[0]
     }
