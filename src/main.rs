@@ -11,6 +11,6 @@ fn main() {
     world.add(Rc::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
 
     // Camera
-    let cam = Camera::new(16.0 / 9.0, 400, 1);
+    let cam = Camera::new(16.0 / 9.0, 400, 1, 50);
     cam.render(&world);
 }

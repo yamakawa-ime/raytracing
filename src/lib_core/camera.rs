@@ -17,13 +17,20 @@ pub struct Camera {
     pixel_delta_u: Vec3,
     pixel_delta_v: Vec3,
     samples_per_pixel: u32,
+    max_depth: u32,
 }
 
 impl Camera {
-    pub fn new(aspect_ratio: f64, image_width: u32, samples_per_pixel: u32) -> Self {
+    pub fn new(
+        aspect_ratio: f64,
+        image_width: u32,
+        samples_per_pixel: u32,
+        max_depth: u32,
+    ) -> Self {
         assert!(aspect_ratio > 0.0, "aspect_ratio");
         assert!(image_width > 0, "image_width");
         assert!(samples_per_pixel > 0, "samples_per_pixel");
+        assert!(max_depth > 0, "max_depth");
 
         let image_height = (f64::from(image_width) / aspect_ratio) as u32;
         let image_height = if image_height < 1 { 1 } else { image_height };
@@ -54,6 +61,7 @@ impl Camera {
             pixel_delta_u,
             pixel_delta_v,
             samples_per_pixel,
+            max_depth,
         }
     }
 
@@ -65,7 +73,7 @@ impl Camera {
                 let mut pixel_color = Color::default();
                 for _ in 0..self.samples_per_pixel {
                     let r = self.get_ray(i, j);
-                    pixel_color += self.ray_color(r, world);
+                    pixel_color += self.ray_color(r, self.max_depth, world);
                 }
                 write_color(&mut image, i, j, &pixel_color, self.samples_per_pixel);
             }
@@ -92,11 +100,16 @@ impl Camera {
         self.pixel_delta_u * px + self.pixel_delta_v * py
     }
 
-    fn ray_color(&self, r: Ray, world: &dyn Hittable) -> Color {
+    fn ray_color(&self, r: Ray, depth: u32, world: &dyn Hittable) -> Color {
         let mut rec = HitRecord::default();
+
+        if depth <= 0 {
+            return Color::new(0.0, 0.0, 0.0);
+        }
+
         if world.hit(&r, Interval::new(0.0, f64::INFINITY), &mut rec) {
             let direction = Vec3::random_on_hemisphere(rec.normal);
-            return self.ray_color(Ray::new(rec.p, direction), world) * 0.5;
+            return self.ray_color(Ray::new(rec.p, direction), depth - 1, world) * 0.5;
         }
 
         let unit_direction = r.direction().unit_vector();
