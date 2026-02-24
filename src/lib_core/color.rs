@@ -13,9 +13,9 @@ pub fn write_color(
 ) {
     let scale = 1.0 / f64::from(samples_per_pixel);
 
-    let r = pixel_color.x() * scale;
-    let g = pixel_color.y() * scale;
-    let b = pixel_color.z() * scale;
+    let r = linear_to_gamma(pixel_color.x() * scale);
+    let g = linear_to_gamma(pixel_color.y() * scale);
+    let b = linear_to_gamma(pixel_color.z() * scale);
 
     let intensity = Interval::new(0.0, 0.999);
 
@@ -24,4 +24,8 @@ pub fn write_color(
     let ib = (256.0 * intensity.clamp(b)) as u8;
 
     image.put_pixel(i, j, Rgb([ir, ig, ib]));
+}
+
+fn linear_to_gamma(linear_component: f64) -> f64 {
+    return linear_component.sqrt();
 }
