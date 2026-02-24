@@ -41,8 +41,8 @@ impl Hittable for HittableList {
         for object in self.objects.iter() {
             if object.hit(r, Interval::new(ray_t.min(), closest_so_far), &mut temp_rec) {
                 hit_aything = true;
+                *rec = temp_rec.clone();
                 closest_so_far = temp_rec.t;
-                *rec = temp_rec;
             }
         }
 

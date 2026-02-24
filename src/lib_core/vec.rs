@@ -78,6 +78,10 @@ impl Vec3 {
         )
     }
 
+    pub fn reflect(self, n: Self) -> Self {
+        self - n * 2.0 * self.dot(n)
+    }
+
     pub fn unit_vector(&self) -> Self {
         *self / self.length()
     }
@@ -88,6 +92,11 @@ impl Vec3 {
 
     pub fn length_squared(&self) -> f64 {
         self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]
+    }
+
+    pub fn near_zero(&self) -> bool {
+        let s = 1e-8;
+        self.e[0].abs() < s && self.e[1].abs() < s && self.e[2].abs() < s
     }
 }
 

@@ -108,8 +108,13 @@ impl Camera {
         }
 
         if world.hit(&r, Interval::new(0.001, f64::INFINITY), &mut rec) {
-            let direction = rec.normal + Vec3::random_unit_vector();
-            return self.ray_color(Ray::new(rec.p, direction), depth - 1, world) * 0.5;
+            let mut scattered = Ray::default();
+            let mut attenuation = Color::default();
+            if let Some(mat) = &rec.mat {
+                if mat.scatter(&r, &rec, &mut attenuation, &mut scattered) {
+                    return attenuation * self.ray_color(scattered, depth - 1, world);
+                }
+            }
         }
 
         let unit_direction = r.direction().unit_vector();

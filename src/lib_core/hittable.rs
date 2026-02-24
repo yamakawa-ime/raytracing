@@ -1,11 +1,14 @@
-use crate::lib_core::{interval::Interval, point::Point3, ray::Ray, vec::Vec3};
+use std::rc::Rc;
 
-#[derive(Clone, Copy)]
+use crate::lib_core::{interval::Interval, material::Material, point::Point3, ray::Ray, vec::Vec3};
+
+#[derive(Clone)]
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vec3,
     pub t: f64,
     pub front_face: bool,
+    pub mat: Option<Rc<dyn Material>>,
 }
 
 impl HitRecord {
@@ -15,6 +18,7 @@ impl HitRecord {
             normal: Vec3::default(),
             t: 0.0,
             front_face: false,
+            mat: None,
         }
     }
 

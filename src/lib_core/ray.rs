@@ -14,6 +14,13 @@ impl Ray {
         }
     }
 
+    pub fn default() -> Self {
+        Self {
+            org: Vec3::default(),
+            dir: Vec3::default(),
+        }
+    }
+
     pub fn origin(&self) -> Point3 {
         self.org
     }
