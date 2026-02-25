@@ -16,13 +16,13 @@ impl Vec3 {
         Self { e: [0.0, 0.0, 0.0] }
     }
 
-    pub fn random() -> Self {
+    fn _random() -> Self {
         Self {
             e: [random_double(), random_double(), random_double()],
         }
     }
 
-    pub fn random_range(min: f64, max: f64) -> Self {
+    fn random_range(min: f64, max: f64) -> Self {
         Self {
             e: [
                 random_double_range(min, max),
@@ -45,7 +45,7 @@ impl Vec3 {
         Self::random_in_unit_sphere().unit_vector()
     }
 
-    pub fn random_on_hemisphere(normal: Vec3) -> Self {
+    fn _random_on_hemisphere(normal: Vec3) -> Self {
         let on_unit_sphere = Self::random_unit_vector();
         if on_unit_sphere.dot(normal) > 0.0 {
             return on_unit_sphere;
@@ -80,6 +80,15 @@ impl Vec3 {
 
     pub fn reflect(self, n: Self) -> Self {
         self - n * 2.0 * self.dot(n)
+    }
+
+    pub fn reflact(self, n: Self, etai_over_etat: f64) -> Self {
+        let uv = self.unit_vector();
+        let n = n.unit_vector();
+        let cos_theta = (-uv).dot(n).min(1.0);
+        let r_out_prep = (uv + n * cos_theta) * etai_over_etat;
+        let r_out_parallel = n * (-(1.0 - r_out_prep.length_squared()).abs().sqrt());
+        r_out_prep + r_out_parallel
     }
 
     pub fn unit_vector(&self) -> Self {
