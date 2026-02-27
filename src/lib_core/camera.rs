@@ -26,6 +26,10 @@ impl Camera {
         image_width: u32,
         samples_per_pixel: u32,
         max_depth: u32,
+        vfov: f64,
+        lookfrom: Vec3,
+        lookat: Vec3,
+        vup: Vec3,
     ) -> Self {
         assert!(aspect_ratio > 0.0, "aspect_ratio");
         assert!(image_width > 0, "image_width");
@@ -35,22 +39,27 @@ impl Camera {
         let image_height = (f64::from(image_width) / aspect_ratio) as u32;
         let image_height = if image_height < 1 { 1 } else { image_height };
 
-        let center = Point3::new(0.0, 0.0, 0.0);
+        let center = lookfrom;
 
-        let focal_length = 1.0;
+        let focal_length = (lookfrom - lookat).length();
+        let theta = f64::to_radians(vfov);
+        let h = f64::tan(theta / 2.0);
 
         // Viewport
-        let viewport_height = 2.0;
+        let viewport_height = 2.0 * h * focal_length;
         let viewport_width = viewport_height * (f64::from(image_width) / f64::from(image_height));
 
-        let viewport_u = Vec3::new(viewport_width, 0.0, 0.0);
-        let viewport_v = Vec3::new(0.0, -viewport_height, 0.0);
+        let w = (lookfrom - lookat).unit_vector();
+        let u = vup.cross(w).unit_vector();
+        let v = w.cross(u);
+
+        let viewport_u = u * viewport_width;
+        let viewport_v = (-v) * viewport_height;
 
         let pixel_delta_u = viewport_u / f64::from(image_width);
         let pixel_delta_v = viewport_v / f64::from(image_height);
 
-        let viewport_upper_left =
-            center - Vec3::new(0.0, 0.0, focal_length) - viewport_u / 2.0 - viewport_v / 2.0;
+        let viewport_upper_left = center - (w * focal_length) - viewport_u / 2.0 - viewport_v / 2.0;
         let pixel00_loc = viewport_upper_left + (pixel_delta_u + pixel_delta_v) * 0.5;
 
         Self {
