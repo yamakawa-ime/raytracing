@@ -54,6 +54,19 @@ impl Vec3 {
         }
     }
 
+    pub fn random_in_unit_disk() -> Self {
+        loop {
+            let p = Vec3::new(
+                random_double_range(-1.0, 1.0),
+                random_double_range(-1.0, 1.0),
+                0.0,
+            );
+            if p.length_squared() < 1.0 {
+                return p;
+            }
+        }
+    }
+
     pub fn x(&self) -> f64 {
         self.e[0]
     }
