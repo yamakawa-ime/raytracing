@@ -1,8 +1,25 @@
 use image::{Rgb, RgbImage};
 
-use crate::lib_core::{interval::Interval, vec::Vec3};
+use crate::lib_core::{interval::Interval, rtweekend::random_double_range, vec::Vec3};
 
 pub type Color = Vec3;
+
+impl Color {
+    pub fn random_c() -> Self {
+        Self::new(
+            random_double_range(0.0, 1.0),
+            random_double_range(0.0, 1.0),
+            random_double_range(0.0, 1.0),
+        )
+    }
+    pub fn random_range_c(min: f64, max: f64) -> Self {
+        Self::new(
+            random_double_range(min, max),
+            random_double_range(min, max),
+            random_double_range(min, max),
+        )
+    }
+}
 
 pub fn write_color(
     image: &mut RgbImage,
