@@ -12,7 +12,7 @@ impl Vec3 {
         Self { e: [x, y, z] }
     }
 
-    pub fn default() -> Self {
+    pub fn zero() -> Self {
         Self { e: [0.0, 0.0, 0.0] }
     }
 
@@ -95,7 +95,7 @@ impl Vec3 {
         self - n * 2.0 * self.dot(n)
     }
 
-    pub fn reflact(self, n: Self, etai_over_etat: f64) -> Self {
+    pub fn refract(self, n: Self, etai_over_etat: f64) -> Self {
         let uv = self.unit_vector();
         let n = n.unit_vector();
         let cos_theta = (-uv).dot(n).min(1.0);

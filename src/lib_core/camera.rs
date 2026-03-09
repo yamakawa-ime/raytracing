@@ -90,7 +90,7 @@ impl Camera {
         for j in 0..self.image_height {
             eprint!("\rScanlines remaining: {} ", self.image_height - j);
             for i in 0..self.image_width {
-                let mut pixel_color = Color::default();
+                let mut pixel_color = Color::zero();
                 for _ in 0..self.samples_per_pixel {
                     let r = self.get_ray(i, j);
                     pixel_color += self.ray_color(r, self.max_depth, world);
@@ -114,8 +114,9 @@ impl Camera {
             self.defocus_disk_sample()
         };
         let ray_direction = pixel_sample - ray_origin;
+        let ray_time = random_double();
 
-        Ray::new(ray_origin, ray_direction)
+        Ray::new(ray_origin, ray_direction, ray_time)
     }
 
     fn defocus_disk_sample(&self) -> Point3 {
@@ -138,7 +139,7 @@ impl Camera {
 
         if world.hit(&r, Interval::new(0.001, f64::INFINITY), &mut rec) {
             let mut scattered = Ray::default();
-            let mut attenuation = Color::default();
+            let mut attenuation = Color::zero();
             if let Some(mat) = &rec.mat {
                 if mat.scatter(&r, &rec, &mut attenuation, &mut scattered) {
                     return attenuation * self.ray_color(scattered, depth - 1, world);

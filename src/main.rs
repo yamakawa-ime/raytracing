@@ -16,7 +16,7 @@ fn main() {
     let mut world = HittableList::default();
 
     let ground_material = Rc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
-    world.add(Rc::new(Sphere::new(
+    world.add(Rc::new(Sphere::stationary(
         Point3::new(0.0, -1000.0, 0.0),
         1000.0,
         ground_material,
@@ -35,36 +35,42 @@ fn main() {
                 if choose_mat < 0.8 {
                     let albedo = Color::random_c() * Color::random_c();
                     let sphere_material = Rc::new(Lambertian::new(albedo));
-                    world.add(Rc::new(Sphere::new(center, 0.2, sphere_material)));
+                    let center2 = center + Vec3::new(0.0, random_double_range(0.0, 0.5), 0.0);
+                    world.add(Rc::new(Sphere::moving(
+                        center,
+                        center2,
+                        0.2,
+                        sphere_material,
+                    )));
                 } else if choose_mat < 0.95 {
                     let albedo = Color::random_range_c(0.5, 1.0);
                     let fuzzy = random_double_range(0.0, 0.5);
                     let sphere_material = Rc::new(Metal::new(albedo, fuzzy));
-                    world.add(Rc::new(Sphere::new(center, 0.2, sphere_material)));
+                    world.add(Rc::new(Sphere::stationary(center, 0.2, sphere_material)));
                 } else {
                     let sphere_material = Rc::new(Dielectric::new(1.5));
-                    world.add(Rc::new(Sphere::new(center, 0.2, sphere_material)));
+                    world.add(Rc::new(Sphere::stationary(center, 0.2, sphere_material)));
                 }
             }
         }
     }
 
     let material1 = Rc::new(Dielectric::new(1.5));
-    world.add(Rc::new(Sphere::new(
+    world.add(Rc::new(Sphere::stationary(
         Point3::new(0.0, 1.0, 0.0),
         1.0,
         material1,
     )));
 
     let material2 = Rc::new(Lambertian::new(Color::new(0.4, 0.2, 0.1)));
-    world.add(Rc::new(Sphere::new(
+    world.add(Rc::new(Sphere::stationary(
         Point3::new(-4.0, 1.0, 0.0),
         1.0,
         material2,
     )));
 
     let material3 = Rc::new(Metal::new(Color::new(0.7, 0.6, 0.5), 0.0));
-    world.add(Rc::new(Sphere::new(
+    world.add(Rc::new(Sphere::stationary(
         Point3::new(4.0, 1.0, 0.0),
         1.0,
         material3,
@@ -73,8 +79,8 @@ fn main() {
     // Camera
     let cam = Camera::new(
         16.0 / 9.0,
-        1200,
-        1,
+        400,
+        10,
         10,
         20.0,
         Point3::new(13.0, 2.0, 3.0),
