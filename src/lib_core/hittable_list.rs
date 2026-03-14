@@ -1,6 +1,7 @@
 use std::rc::Rc;
 
 use crate::lib_core::{
+    aabb::Aabb,
     hittable::{HitRecord, Hittable},
     interval::Interval,
     ray::Ray,
@@ -8,11 +9,15 @@ use crate::lib_core::{
 
 pub struct HittableList {
     objects: Vec<Rc<dyn Hittable>>,
+    bbox: Aabb,
 }
 
 impl HittableList {
     pub fn default() -> Self {
-        Self { objects: vec![] }
+        Self {
+            objects: vec![],
+            bbox: Aabb::default(),
+        }
     }
 
     pub fn clear(&mut self) {
@@ -20,15 +25,8 @@ impl HittableList {
     }
 
     pub fn add(&mut self, object: Rc<dyn Hittable>) {
+        self.bbox = Aabb::from_box(self.bbox, object.bounding_box());
         self.objects.push(object);
-    }
-}
-
-impl From<Rc<dyn Hittable>> for HittableList {
-    fn from(value: Rc<dyn Hittable>) -> Self {
-        Self {
-            objects: vec![value],
-        }
     }
 }
 
@@ -47,5 +45,9 @@ impl Hittable for HittableList {
         }
 
         hit_aything
+    }
+
+    fn bounding_box(&self) -> Aabb {
+        self.bbox
     }
 }

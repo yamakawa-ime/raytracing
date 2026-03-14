@@ -1,6 +1,8 @@
 use std::rc::Rc;
 
-use crate::lib_core::{interval::Interval, material::Material, point::Point3, ray::Ray, vec::Vec3};
+use crate::lib_core::{
+    aabb::Aabb, interval::Interval, material::Material, point::Point3, ray::Ray, vec::Vec3,
+};
 
 #[derive(Clone)]
 pub struct HitRecord {
@@ -34,4 +36,6 @@ impl HitRecord {
 
 pub trait Hittable {
     fn hit(&self, r: &Ray, ray_t: Interval, rec: &mut HitRecord) -> bool;
+
+    fn bounding_box(&self) -> Aabb;
 }

@@ -1,21 +1,25 @@
 use std::rc::Rc;
 
 use crate::lib_core::{
-    hittable::*, interval::Interval, material::Material, point::Point3, ray::Ray, vec::Vec3,
+    aabb::Aabb, hittable::*, interval::Interval, material::Material, point::Point3, ray::Ray,
+    vec::Vec3,
 };
 
 pub struct Sphere {
     center: Ray,
     radius: f64,
     material: Rc<dyn Material>,
+    bbox: Aabb,
 }
 
 impl Sphere {
     pub fn stationary(static_center: Point3, radius: f64, material: Rc<dyn Material>) -> Self {
+        let rvec = Vec3::new(radius, radius, radius);
         Self {
             center: Ray::new(static_center, Vec3::zero(), 0.0),
             radius,
             material,
+            bbox: Aabb::from_point(static_center - rvec, static_center + rvec),
         }
     }
 
@@ -25,10 +29,15 @@ impl Sphere {
         radius: f64,
         material: Rc<dyn Material>,
     ) -> Self {
+        let center = Ray::new(center1, center2 - center1, 0.0);
+        let rvec = Vec3::new(radius, radius, radius);
+        let box1 = Aabb::from_point(center.at(0.0) - rvec, center.at(0.0) + rvec);
+        let box2 = Aabb::from_point(center.at(1.0) - rvec, center.at(1.0) + rvec);
         Self {
-            center: Ray::new(center1, center2 - center1, 0.0),
+            center,
             radius,
             material,
+            bbox: Aabb::from_box(box1, box2),
         }
     }
 }
@@ -62,5 +71,9 @@ impl Hittable for Sphere {
         rec.mat = Some(self.material.clone());
 
         return true;
+    }
+
+    fn bounding_box(&self) -> Aabb {
+        self.bbox
     }
 }
