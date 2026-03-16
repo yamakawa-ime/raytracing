@@ -93,7 +93,7 @@ impl Aabb {
         self.z
     }
 
-    fn axis_interval(&self, n: usize) -> Interval {
+    pub fn axis_interval(&self, n: usize) -> Interval {
         match n {
             0 => self.x,
             1 => self.y,

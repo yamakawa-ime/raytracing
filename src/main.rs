@@ -1,6 +1,7 @@
 use std::rc::Rc;
 
 use raytracing::lib_core::{
+    bvh::BvhNode,
     camera::Camera,
     color::Color,
     hittable_list::HittableList,
@@ -76,6 +77,7 @@ fn main() {
         material3,
     )));
 
+    let world = HittableList::new(Rc::new(BvhNode::from(&mut world)));
     // Camera
     let cam = Camera::new(
         16.0 / 9.0,

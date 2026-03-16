@@ -13,6 +13,14 @@ pub struct HittableList {
 }
 
 impl HittableList {
+    pub fn new(object: Rc<dyn Hittable>) -> Self {
+        let bbox = object.bounding_box();
+        Self {
+            objects: vec![object],
+            bbox,
+        }
+    }
+
     pub fn default() -> Self {
         Self {
             objects: vec![],
@@ -27,6 +35,10 @@ impl HittableList {
     pub fn add(&mut self, object: Rc<dyn Hittable>) {
         self.bbox = Aabb::from_box(self.bbox, object.bounding_box());
         self.objects.push(object);
+    }
+
+    pub fn objects_mut(&mut self) -> &mut Vec<Rc<dyn Hittable>> {
+        &mut self.objects
     }
 }
 
