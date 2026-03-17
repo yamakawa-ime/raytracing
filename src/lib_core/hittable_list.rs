@@ -24,7 +24,7 @@ impl HittableList {
     pub fn default() -> Self {
         Self {
             objects: vec![],
-            bbox: Aabb::default(),
+            bbox: Aabb::empty(),
         }
     }
 

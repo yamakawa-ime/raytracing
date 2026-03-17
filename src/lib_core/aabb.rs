@@ -8,11 +8,19 @@ pub struct Aabb {
 }
 
 impl Aabb {
-    pub fn default() -> Self {
+    pub fn empty() -> Self {
         Self {
-            x: Interval::default(),
-            y: Interval::default(),
-            z: Interval::default(),
+            x: Interval::empty(),
+            y: Interval::empty(),
+            z: Interval::empty(),
+        }
+    }
+
+    pub fn universe() -> Self {
+        Self {
+            x: Interval::universe(),
+            y: Interval::universe(),
+            z: Interval::universe(),
         }
     }
 
@@ -41,9 +49,9 @@ impl Aabb {
 
     pub fn from_box(box0: Self, box1: Self) -> Self {
         Self {
-            x: Interval::from(box0.x(), box1.x()),
-            y: Interval::from(box0.y(), box1.y()),
-            z: Interval::from(box0.z(), box1.z()),
+            x: Interval::from(box0.x, box1.x),
+            y: Interval::from(box0.y, box1.y),
+            z: Interval::from(box0.z, box1.z),
         }
     }
 
@@ -81,24 +89,20 @@ impl Aabb {
         return true;
     }
 
-    fn x(&self) -> Interval {
-        self.x
-    }
-
-    fn y(&self) -> Interval {
-        self.y
-    }
-
-    fn z(&self) -> Interval {
-        self.z
-    }
-
     pub fn axis_interval(&self, n: usize) -> Interval {
         match n {
             0 => self.x,
             1 => self.y,
             2 => self.z,
             _ => panic!("axis_interval panic"),
+        }
+    }
+
+    pub fn longest_axis(&self) -> usize {
+        if self.x.size() > self.y.size() {
+            if self.x.size() > self.z.size() { 0 } else { 2 }
+        } else {
+            if self.y.size() > self.z.size() { 1 } else { 2 }
         }
     }
 }

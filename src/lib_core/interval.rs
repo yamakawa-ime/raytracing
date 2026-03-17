@@ -77,4 +77,8 @@ impl Interval {
     pub fn set_max(&mut self, val: f64) {
         self.max = val;
     }
+
+    pub fn size(&self) -> f64 {
+        self.max - self.min
+    }
 }

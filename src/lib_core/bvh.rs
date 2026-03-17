@@ -2,7 +2,6 @@ use std::{cmp::Ordering, rc::Rc, usize};
 
 use crate::lib_core::{
     aabb::Aabb, hittable::Hittable, hittable_list::HittableList, interval::Interval,
-    rtweekend::random_int,
 };
 
 pub struct BvhNode {
@@ -18,7 +17,12 @@ impl BvhNode {
     }
 
     pub fn new(objects: &mut Vec<Rc<dyn Hittable>>, start: usize, end: usize) -> Self {
-        let axis = random_int(0, 2);
+        let mut bbox = Aabb::empty();
+        for object_index in start..end {
+            bbox = Aabb::from_box(bbox, objects[object_index].bounding_box());
+        }
+
+        let axis = bbox.longest_axis();
 
         let comparator = match axis {
             0 => Self::box_x_compare,
@@ -47,9 +51,6 @@ impl BvhNode {
                 (left_obj, right_obj)
             }
         };
-
-        let bbox = Aabb::from_box(left.bounding_box(), right.bounding_box());
-
         Self { left, right, bbox }
     }
 
