@@ -11,6 +11,8 @@ pub struct HitRecord {
     pub t: f64,
     pub front_face: bool,
     pub mat: Option<Rc<dyn Material>>,
+    pub u: f64,
+    pub v: f64,
 }
 
 impl HitRecord {
@@ -21,6 +23,8 @@ impl HitRecord {
             t: 0.0,
             front_face: false,
             mat: None,
+            u: 0.0,
+            v: 0.0,
         }
     }
 

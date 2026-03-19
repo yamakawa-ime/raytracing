@@ -9,6 +9,7 @@ use raytracing::lib_core::{
     point::Point3,
     rtweekend::{random_double, random_double_range},
     sphere::Sphere,
+    texture::CheckerTexture,
     vec::Vec3,
 };
 
@@ -16,7 +17,13 @@ fn main() {
     // World
     let mut world = HittableList::default();
 
-    let ground_material = Rc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
+    let checker = Rc::new(CheckerTexture::from_color(
+        0.32,
+        Color::new(0.2, 0.3, 0.1),
+        Color::new(0.9, 0.9, 0.9),
+    ));
+
+    let ground_material = Rc::new(Lambertian::new(checker));
     world.add(Rc::new(Sphere::stationary(
         Point3::new(0.0, -1000.0, 0.0),
         1000.0,
@@ -35,7 +42,7 @@ fn main() {
             if (center - Point3::new(4.0, 0.2, 0.0)).length() > 0.9 {
                 if choose_mat < 0.8 {
                     let albedo = Color::random_c() * Color::random_c();
-                    let sphere_material = Rc::new(Lambertian::new(albedo));
+                    let sphere_material = Rc::new(Lambertian::from(albedo));
                     let center2 = center + Vec3::new(0.0, random_double_range(0.0, 0.5), 0.0);
                     world.add(Rc::new(Sphere::moving(
                         center,
@@ -63,7 +70,7 @@ fn main() {
         material1,
     )));
 
-    let material2 = Rc::new(Lambertian::new(Color::new(0.4, 0.2, 0.1)));
+    let material2 = Rc::new(Lambertian::from(Color::new(0.4, 0.2, 0.1)));
     world.add(Rc::new(Sphere::stationary(
         Point3::new(-4.0, 1.0, 0.0),
         1.0,
@@ -82,7 +89,7 @@ fn main() {
     let cam = Camera::new(
         16.0 / 9.0,
         400,
-        10,
+        25,
         10,
         20.0,
         Point3::new(13.0, 2.0, 3.0),

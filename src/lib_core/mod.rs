@@ -10,4 +10,5 @@ pub mod point;
 pub mod ray;
 pub mod rtweekend;
 pub mod sphere;
+pub mod texture;
 pub mod vec;
