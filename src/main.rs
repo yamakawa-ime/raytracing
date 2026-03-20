@@ -14,6 +14,10 @@ use raytracing::lib_core::{
 };
 
 fn main() {
+    bouncing_spheres();
+}
+
+fn bouncing_spheres() {
     // World
     let mut world = HittableList::default();
 
