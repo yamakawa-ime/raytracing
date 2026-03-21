@@ -4,20 +4,22 @@ use raytracing::lib_core::{
     bvh::BvhNode,
     camera::Camera,
     color::Color,
+    hittable::Hittable,
     hittable_list::HittableList,
     material::{Dielectric, Lambertian, Metal},
     point::Point3,
     rtweekend::{random_double, random_double_range},
     sphere::Sphere,
-    texture::CheckerTexture,
+    texture::{CheckerTexture, ImageTexture},
     vec::Vec3,
 };
 
 fn main() {
-    let mode = 2;
+    let mode = 3;
     match mode {
         1 => bouncing_spheres(),
         2 => checkered_spheres(),
+        3 => earth(),
         _ => bouncing_spheres(),
     }
 }
@@ -145,4 +147,29 @@ fn checkered_spheres() {
     );
 
     cam.render(&world);
+}
+
+fn earth() {
+    let earth_texture = Rc::new(ImageTexture::new("raytracing/images/earthmap.jpg"));
+    let earth_surface = Rc::new(Lambertian::new(earth_texture));
+    let globe: Rc<dyn Hittable> = Rc::new(Sphere::stationary(
+        Point3::new(0.0, 0.0, 0.0),
+        2.0,
+        earth_surface,
+    ));
+
+    let cam = Camera::new(
+        16.0 / 9.0,
+        400,
+        10,
+        50,
+        20.0,
+        Point3::new(0.0, 0.0, 12.0),
+        Point3::new(0.0, 0.0, 0.0),
+        Vec3::new(0.0, 1.0, 0.0),
+        0.0,
+        10.0,
+    );
+
+    cam.render(&HittableList::new(globe));
 }

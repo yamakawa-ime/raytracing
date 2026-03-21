@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::{f64::consts::PI, rc::Rc};
 
 use crate::lib_core::{
     aabb::Aabb, hittable::*, interval::Interval, material::Material, point::Point3, ray::Ray,
@@ -40,6 +40,16 @@ impl Sphere {
             bbox: Aabb::from_box(box1, box2),
         }
     }
+
+    fn get_sphere_uv(p: Point3) -> (f64, f64) {
+        let theta = (-p.y()).acos();
+        let phi = (-p.z()).atan2(p.x()) + PI;
+
+        let u = phi / (2.0 * PI);
+        let v = theta / PI;
+
+        (u, v)
+    }
 }
 
 impl Hittable for Sphere {
@@ -68,6 +78,7 @@ impl Hittable for Sphere {
         rec.p = r.at(rec.t);
         let outward_normal = (rec.p - current_center) / self.radius;
         rec.set_face_normal(r, outward_normal);
+        (rec.u, rec.v) = Self::get_sphere_uv(outward_normal);
         rec.mat = Some(self.material.clone());
 
         return true;
